@@ -50,8 +50,7 @@ COPY faasr_start_invoke_github-actions.R /action
 COPY python_wrapper_aws-lambda.py /lambda_runtime/lambda_function.py
 
 # Install the AWS Lambda Runtime Interface Emulator
-RUN curl -Lo /usr/bin/aws-lambda-rie https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/downloa
-d/aws-lambda-rie && \
+RUN curl -Lo /usr/bin/aws-lambda-rie https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/aws-lambda-rie && \
     chmod +x /usr/bin/aws-lambda-rie
 COPY entrypoint_aws-lambda.sh /lambda_runtime/entry.sh
 RUN chmod 755 /lambda_runtime/entry.sh
