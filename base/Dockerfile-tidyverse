@@ -20,8 +20,6 @@ RUN R -e "install.packages('jsonlite', repos='https://cloud.R-project.org')" && 
     R -e "install.packages('paws', repos='https://cloud.R-project.org')" && \
     R -e "install.packages('githubinstall', repos='https://cloud.R-project.org')"
 
-#Install FaaSr
-RUN R -e "library(devtools); install_github('FaaSr/FaaSr-package',ref='main')"
 
 #==============================================Lambda function & Github Actions
 # Install dependencies
@@ -71,6 +69,9 @@ RUN cp openwhisk-runtime-docker/core/actionProxy/owplatform/openwhisk.py /action
 # Copy FaaSr invocation code
 COPY faasr_start_invoke_openwhisk_aws-lambda.R /action/exec
 RUN chmod +x /action/exec
+
+#Install FaaSr
+RUN R -e "library(devtools); install_github('FaaSr/FaaSr-package',ref='main')"
 
 #Add json schema
 ADD https://raw.githubusercontent.com/FaaSr/FaaSr-package/main/schema/FaaSr.schema.json /action/
