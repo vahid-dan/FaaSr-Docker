@@ -2,6 +2,7 @@
 
 library("jsonlite")
 library("githubinstall")
+library("FaaSr")
 
 faasr <- commandArgs(TRUE)
 faasr_source <- fromJSON(faasr)
