@@ -1,6 +1,7 @@
 library("httr")
 library("jsonlite")
 library("githubinstall")
+library("FaaSr")
 
 # Recursive function to replace values
 replace_values <- function(user_info, secrets) {
