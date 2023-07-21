@@ -1,3 +1,12 @@
+#' @title Set an entrypoin / Prepare parameters / Source R codes - for Github actions
+#' @description When the docker containers run, they start this R code very first time.
+#'              This is necessary because it sets library("FaaSr") so that users code can use the FaaSr library and
+#'              user's functions would be downloaded from the user's github repository and then they are sourced by
+#'              this function. In case of github actions, Secrets(Credentials) for S3(storage), Lambda, Openwhisk, and
+#'              Github actions itself and Payload should be called by "replace_values" and "get_payload".
+#' @param secrets should be stored in the github repository as secrets.
+#' @param JSON payload should be stored in the github repository and the path should be designated.
+
 library("httr")
 library("jsonlite")
 library("githubinstall")
