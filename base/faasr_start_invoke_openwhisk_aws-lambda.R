@@ -1,5 +1,12 @@
 #!/usr/local/bin/Rscript
 
+#' @title Set an entrypoin / Source R codes - for Openwhisk and AWS lambda
+#' @description When the docker containers run, they start this R code very first time.
+#'              This is necessary because it sets library("FaaSr") so that users code can use the FaaSr library and
+#'              user's functions would be downloaded from the user's github repository and then they are sourced by
+#'              this function. 
+#' @param JSON payload is passed as an input when the docker container starts.
+
 library("jsonlite")
 library("githubinstall")
 library("FaaSr")
