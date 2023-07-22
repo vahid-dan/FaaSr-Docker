@@ -87,6 +87,7 @@ faasr <- get_payload(secrets)
 
 faasr$InvocationID <- Sys.getenv("INPUT_ID")
 faasr$FunctionInvoke <- Sys.getenv("INPUT_INVOKENAME")
+faasr$FaaSrLog <- Sys.getenv("INPUT_FAASRLOG")
 #cat("exec.R: faasr-invocationID is: ", faasr$InvocationID, "\n")
 #cat("exec.R: faasr-FunctionInvoke is: ", faasr$FunctionInvoke, "\n")
 
