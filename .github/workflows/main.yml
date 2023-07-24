@@ -22,9 +22,8 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build Docker image
         run: |
-          pwd
-          ls
           cd base
+          mv Dockerfile-tidyverse Dockerfile
           docker build -t base-tidyverse:${{ env.FAASR_VERSION }}-${{ env.TAG_SUFFIX }} .
       - name: Push Docker image
         run: |
