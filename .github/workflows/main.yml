@@ -17,12 +17,32 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build Docker image
+      - name: Build base-tidyverse Docker image
         run: |
           cd base
           mv Dockerfile-tidyverse Dockerfile
           docker build -t base-tidyverse:${{ env.FAASR_VERSION }}-${{ env.TAG_SUFFIX }} .
-      - name: Push Docker image
+      - name: Push base-tidyverse Docker image
         run: |
-          docker tag base-tidyverse:${{ env.FAASR_VERSION }}-${{ env.TAG_SUFFIX }} ${{ env.DOCKER_USERNAME }}/base-tidyverse:${{ env.FAASR_VERSION }}-${{ env.TAG_SUFFIX }}
-          docker push ${{ env.DOCKER_USERNAME }}/base-tidyverse:${{ env.FAASR_VERSION }}-${{ env.TAG_SUFFIX }}
+          docker tag base-tidyverse:${{ env.FAASR_VERSION }}-${{ env.TAG_SUFFIX }} ${{ env.DOCKERHUB_USERNAME }}/base-tidyverse:${{ env.FAASR_VERSION }}-${{ env.TAG_SUFFIX }}
+          docker push ${{ env.DOCKERHUB_USERNAME }}/base-tidyverse:${{ env.FAASR_VERSION }}-${{ env.TAG_SUFFIX }}
+      - name: Build openwhisk-tidyverse Docker image
+        run: |
+          cd ../openwhisk
+          mv Dockerfile-tidyverse Dockerfile
+          docker build -t openwhisk-tidyverse:${{ env.FAASR_VERSION }}-${{ env.TAG_SUFFIX }} .
+      - name: Push openwhisk-tidyverse Docker image
+        run: |
+          docker tag openwhisk-tidyverse:${{ env.FAASR_VERSION }}-${{ env.TAG_SUFFIX }} ${{ env.DOCKERHUB_USERNAME }}/openwhisk-tidyverse:${{ env.FAASR_VERSION }}-${{ env.TAG_SUFFIX }}
+          docker push ${{ env.DOCKERHUB_USERNAME }}/openwhisk-tidyverse:${{ env.FAASR_VERSION }}-${{ env.TAG_SUFFIX }}
+      - name: Build github-actions-tidyverse Docker image
+        run: |
+          cd ../github-actions
+          mv Dockerfile-tidyverse Dockerfile
+          docker build -t github-actions-tidyverse:${{ env.FAASR_VERSION }}-${{ env.TAG_SUFFIX }} .
+      - name: Push github-actions-tidyverse Docker image
+        run: |
+          docker tag github-actions-tidyverse:${{ env.FAASR_VERSION }}-${{ env.TAG_SUFFIX }} ${{ env.DOCKERHUB_USERNAME }}/github-actions-tidyverse:${{ env.FAASR_VERSION }}-${{ env.TAG_SUFFIX }}
+          docker push ${{ env.DOCKERHUB_USERNAME }}/github-actions-tidyverse:${{ env.FAASR_VERSION }}-${{ env.TAG_SUFFIX }}
+
+          
