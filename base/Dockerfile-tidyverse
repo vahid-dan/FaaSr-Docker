@@ -9,7 +9,6 @@ RUN apt-get update && \
 # Python Dependencies
 COPY requirements.txt /tmp/
 RUN update-ca-certificates \
-    && pip install --upgrade pip setuptools six \
     && pip install --requirement /tmp/requirements.txt && \
     rm /tmp/requirements.txt
 
