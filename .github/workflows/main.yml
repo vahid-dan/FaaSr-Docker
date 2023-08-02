@@ -28,7 +28,7 @@ jobs:
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/base-tidyverse:${{ env.FAASR_VERSION }}-${{ env.TAG_SUFFIX }}
       - name: Build openwhisk-tidyverse Docker image
         run: |
-          cd ../openwhisk
+          cd openwhisk
           mv Dockerfile-tidyverse Dockerfile
           docker build -t openwhisk-tidyverse:${{ env.FAASR_VERSION }}-${{ env.TAG_SUFFIX }} .
       - name: Push openwhisk-tidyverse Docker image
@@ -37,7 +37,7 @@ jobs:
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/openwhisk-tidyverse:${{ env.FAASR_VERSION }}-${{ env.TAG_SUFFIX }}
       - name: Build github-actions-tidyverse Docker image
         run: |
-          cd ../github-actions
+          cd github-actions
           mv Dockerfile-tidyverse Dockerfile
           docker build -t github-actions-tidyverse:${{ env.FAASR_VERSION }}-${{ env.TAG_SUFFIX }} .
       - name: Push github-actions-tidyverse Docker image
