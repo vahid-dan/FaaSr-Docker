@@ -1,4 +1,4 @@
-# Stage 1: Build stage
+# === Stage 1: Build stage ===
 FROM rocker/tidyverse:4.3.1 AS build
 
 # Install apt packages
@@ -21,7 +21,7 @@ RUN Rscript /tmp/R_packages.R && \
     rm /tmp/R_packages.R && \
     rm -rf /tmp/downloaded_packages/ /tmp/*.rds /tmp/*.tar.gz
 
-# Stage 2: Runtime stage
+# === Stage 2: Test stage ===
 FROM build as runtime
 
 # Create function directory
