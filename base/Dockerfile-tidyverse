@@ -1,31 +1,35 @@
-FROM rocker/tidyverse:4.3.1
+# Stage 1: Build stage
+FROM rocker/tidyverse:4.3.1 AS build
 
 # Install apt-get packages
 COPY apt-packages.txt /tmp/
 RUN apt-get update && \
     xargs -a /tmp/apt-packages.txt apt-get install -y && \
-    rm /tmp/apt-packages.txt
+    rm /tmp/apt-packages.txt && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Python Dependencies
+# Install Python dependencies
 COPY requirements.txt /tmp/
 RUN update-ca-certificates \
-    && pip install --requirement /tmp/requirements.txt && \
+    && pip install --no-cache-dir --requirement /tmp/requirements.txt && \
     rm /tmp/requirements.txt
 
 # Install R packages
 COPY R_packages.R /tmp/
 RUN Rscript /tmp/R_packages.R && \
-    rm /tmp/R_packages.R
+    rm /tmp/R_packages.R && \
+    rm -rf /tmp/downloaded_packages/ /tmp/*.rds /tmp/*.tar.gz
 
+# Stage 2: Runtime stage
+FROM build as runtime
 
-#==============================================Lambda function & Github Actions
 # Create function directory
 RUN mkdir -p /lambda_runtime
 RUN mkdir -p /action
+
 # Install the AWS Lambda Runtime Interface Client for Python
-RUN pip install \
-    --target /lambda_runtime \
-        awslambdaric
+RUN pip install --no-cache-dir --target /lambda_runtime awslambdaric
 
 # Copy FaaSr invocation code
 COPY faasr_start_invoke_openwhisk_aws-lambda.R /action
@@ -40,11 +44,10 @@ RUN curl -Lo /usr/bin/aws-lambda-rie https://github.com/aws/aws-lambda-runtime-i
 COPY entrypoint_aws-lambda.sh /lambda_runtime/entry.sh
 RUN chmod 755 /lambda_runtime/entry.sh
 
-#==============================================Openwhisk
-#Setup port
+# Setup port
 ENV FLASK_PROXY_PORT 8080
 
-#Copy and make files/directoreis for actionProxy
+# Copy and make files/directoreis for actionProxy
 RUN mkdir -p /actionProxy/owplatform
 RUN git clone https://github.com/apache/openwhisk-runtime-docker
 RUN cp openwhisk-runtime-docker/core/actionProxy/actionproxy.py /actionProxy
@@ -52,13 +55,17 @@ RUN cp openwhisk-runtime-docker/core/actionProxy/owplatform/__init__.py /actionP
 RUN cp openwhisk-runtime-docker/core/actionProxy/owplatform/knative.py /actionProxy/owplatform
 RUN cp openwhisk-runtime-docker/core/actionProxy/owplatform/openwhisk.py /actionProxy/owplatform
 
-#Setup basic executable
+# Setup basic executable
 # Copy FaaSr invocation code
 COPY faasr_start_invoke_openwhisk_aws-lambda.R /action/exec
 RUN chmod +x /action/exec
 
-#Install FaaSr
+# Install FaaSr
 RUN R -e "library(devtools); install_github('FaaSr/FaaSr-package',ref='main')"
 
-#Add json schema
+# Add json schema
 ADD https://raw.githubusercontent.com/FaaSr/FaaSr-package/main/schema/FaaSr.schema.json /action/
+
+# Add LABELs to provide metadata
+LABEL maintainer="Renato Figueiredo <renato [at] ece.ufl.edu>"
+LABEL description="Docker image for FaaSr"
